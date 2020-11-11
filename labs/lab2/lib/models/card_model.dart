@@ -11,7 +11,7 @@ class CardModel {
   });
 
   static const String _cardHolderLabelDefault = 'Card Holder';
-  static const String _cardHolderHintDefault = 'FULL NAME';
+  static const String _cardHolderHintDefault = 'Full name';
   static const String _cardNrDefault = 'Card Number';
   static const String _cardNrHintDefault = '#### #### #### ####';
   static const String _expDateLabelDefault = 'Expires';

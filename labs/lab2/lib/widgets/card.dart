@@ -1,20 +1,19 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lab2/models/card_model.dart';
 
 class CreditCard extends StatefulWidget {
-  const CreditCard(
-      {Key key,
-      this.cardHolder,
-      this.cardNr,
-      this.expDate,
-      this.cvv,
-      this.bgNr,
-      this.isCardFlipped,
-      this.cardModel = const CardModel()})
-      : super(key: key);
+  const CreditCard({
+    Key key,
+    this.cardHolder,
+    this.cardNr,
+    this.expDate,
+    this.cvv,
+    this.bgNr,
+    this.isCardFlipped,
+    this.cardModel = const CardModel(),
+    this.backgroundImage,
+  }) : super(key: key);
 
   final String cardHolder;
   final String cardNr;
@@ -23,6 +22,7 @@ class CreditCard extends StatefulWidget {
   final int bgNr;
   final bool isCardFlipped;
   final CardModel cardModel;
+  final int backgroundImage;
 
   @override
   _CreditCardState createState() => _CreditCardState();
@@ -33,10 +33,11 @@ class _CreditCardState extends State<CreditCard> {
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
-    final int backgroundImage = Random().nextInt(25) + 1;
+
     return AnimatedCrossFade(
-      firstChild: buildBackCard(width, height, backgroundImage, context),
-      secondChild: buildFrontCard(width, height, backgroundImage, context),
+      firstChild: buildBackCard(width, height, widget.backgroundImage, context),
+      secondChild:
+          buildFrontCard(width, height, widget.backgroundImage, context),
       crossFadeState: widget.isCardFlipped
           ? CrossFadeState.showFirst
           : CrossFadeState.showSecond,

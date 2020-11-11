@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:lab2/models/card_information.dart';
 import 'package:lab2/widgets/card.dart';
+import 'package:lab2/widgets/form.dart';
 
 void main() => runApp(MyApp());
 
@@ -46,11 +50,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String cardHolder = 'Thomas Indrias';
-  String cardNr = '5141 5451 3215 3656';
-  String expDate = '12/23';
-  String cvv = '1234';
-  bool isCardFlipped = true;
+  String cardHolder = '';
+  String cardNr = '';
+  String expDate = '';
+  String cvv = '';
+  bool isCardFlipped = false;
+
+  int imgBg = Random().nextInt(25) + 1;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // the App.build method, and use it to set our appbar title.
           title: Text(widget.title),
         ),
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
           child: Column(
             children: <Widget>[
@@ -75,9 +82,33 @@ class _MyHomePageState extends State<MyHomePage> {
                 expDate: expDate,
                 cvv: cvv,
                 isCardFlipped: isCardFlipped,
+                backgroundImage: imgBg,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white30,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: CreditCardForm(
+                      onChange: onChange,
+                    ),
+                  ),
+                ),
               )
             ],
           ),
         ));
+  }
+
+  void onChange(CardInformation cardInfo) {
+    setState(() {
+      cardHolder = cardInfo.cardHolder;
+      cardNr = cardInfo.cardNr;
+      expDate = cardInfo.expDate;
+      cvv = cardInfo.cvv;
+      isCardFlipped = cardInfo.isCardFlipped;
+    });
   }
 }

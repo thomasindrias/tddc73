@@ -6,5 +6,5 @@ class CardInformation {
   String cardNr;
   String expDate;
   String cvv;
-  String isCardFlipped;
+  bool isCardFlipped;
 }
