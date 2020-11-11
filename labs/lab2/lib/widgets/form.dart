@@ -126,6 +126,7 @@ class CreditCardFormState extends State<CreditCardForm> {
 
   @override
   Widget build(BuildContext context) {
+    final node = FocusScope.of(context);
     return Form(
         child: Column(
       children: [
@@ -139,6 +140,7 @@ class CreditCardFormState extends State<CreditCardForm> {
               labelText: widget.cardModel.cardNr,
               hintText: widget.cardModel.cardNrHint,
             ),
+            onEditingComplete: () => node.nextFocus(),
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
           ),
@@ -153,61 +155,66 @@ class CreditCardFormState extends State<CreditCardForm> {
               labelText: widget.cardModel.cardHolderLabel,
               hintText: widget.cardModel.cardHolderHint,
             ),
+            onEditingComplete: () => node.nextFocus(),
             keyboardType: TextInputType.text,
             textInputAction: TextInputAction.next,
           ),
         ),
         Container(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
-          margin: const EdgeInsets.only(left: 16, top: 16, right: 16),
+          margin: const EdgeInsets.all(16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
-                flex: 1,
+                flex: 2,
                 child: Row(
                   children: [
                     Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 8.0, 0),
-                        child: DropdownButtonFormField<String>(
-                            value: chosenMonth,
-                            items: months,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.all(8.0),
-                              border: const OutlineInputBorder(),
-                              labelText: "Month",
-                              hintText: "MM",
-                            ),
-                            style: GoogleFonts.sourceSansPro(
-                                color: Colors.black87, fontSize: 18),
-                            onChanged: (String month) {
-                              setState(() {
-                                chosenMonth = month;
-                                expDateController(chosenMonth, true);
-                              });
-                            }),
-                      ),
+                      flex: 3,
+                      child: DropdownButtonFormField<String>(
+                          value: chosenMonth,
+                          items: months,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.all(7.0),
+                            border: const OutlineInputBorder(),
+                            labelText: "Month",
+                            hintText: "MM",
+                          ),
+                          style: GoogleFonts.sourceSansPro(
+                              color: Colors.black87, fontSize: 18),
+                          onChanged: (String month) {
+                            setState(() {
+                              //FocusScope.of(context).requestFocus(FocusNode());
+                              node.nextFocus();
+
+                              chosenMonth = month;
+                              expDateController(chosenMonth, true);
+                            });
+                          }),
+                    ),
+                    Spacer(
+                      flex: 1,
                     ),
                     Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: DropdownButtonFormField<String>(
-                            value: chosenYear,
-                            items: years,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.all(8.0),
-                              border: const OutlineInputBorder(),
-                              labelText: "Year",
-                              hintText: "YY",
-                            ),
-                            style: GoogleFonts.sourceSansPro(
-                                color: Colors.black87, fontSize: 18),
-                            onChanged: (String year) {
-                              chosenYear = year;
-                              expDateController(year, false);
-                            }),
-                      ),
+                      flex: 3,
+                      child: DropdownButtonFormField<String>(
+                          value: chosenYear,
+                          items: years,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.all(8.0),
+                            border: const OutlineInputBorder(),
+                            labelText: "Year",
+                            hintText: "YY",
+                          ),
+                          style: GoogleFonts.sourceSansPro(
+                              color: Colors.black87, fontSize: 18),
+                          onChanged: (String year) {
+                            //FocusScope.of(context).requestFocus(FocusNode());
+                            node.nextFocus();
+                            chosenYear = year;
+                            expDateController(year, false);
+                          }),
                     ),
                   ],
                 ),
@@ -225,6 +232,7 @@ class CreditCardFormState extends State<CreditCardForm> {
                       labelText: widget.cardModel.cvvLabel,
                       hintText: widget.cardModel.cvvHint,
                     ),
+                    onFieldSubmitted: (_) => node.unfocus(),
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
                   ),

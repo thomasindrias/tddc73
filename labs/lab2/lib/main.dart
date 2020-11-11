@@ -9,6 +9,9 @@ void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
+  ThemeData theme = ThemeData(primarySwatch: Colors.blue);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -42,7 +45,7 @@ class MyHomePage extends StatefulWidget {
   // case the title) provided by the parent (in this case the App widget) and
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
-
+  final ThemeData theme = ThemeData(primarySwatch: Colors.blue);
   final String title;
 
   @override
@@ -60,45 +63,51 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    final double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
           title: Text(widget.title),
         ),
+        backgroundColor: widget.theme.scaffoldBackgroundColor,
         resizeToAvoidBottomInset: true,
-        body: SafeArea(
-          child: Column(
-            children: <Widget>[
-              CreditCard(
-                cardHolder: cardHolder,
-                cardNr: cardNr,
-                expDate: expDate,
-                cvv: cvv,
-                isCardFlipped: isCardFlipped,
-                backgroundImage: imgBg,
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              expandedHeight: height * 0.4,
+              backgroundColor: widget.theme.scaffoldBackgroundColor,
+              flexibleSpace: FlexibleSpaceBar(
+                background: CreditCard(
+                  cardHolder: cardHolder,
+                  cardNr: cardNr,
+                  expDate: expDate,
+                  cvv: cvv,
+                  isCardFlipped: isCardFlipped,
+                  backgroundImage: imgBg,
+                ),
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white30,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: CreditCardForm(
-                      onChange: onChange,
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate([
+                Card(
+                  margin: EdgeInsets.all(12.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: SingleChildScrollView(
+                      child: CreditCardForm(
+                        onChange: onChange,
+                      ),
                     ),
                   ),
                 ),
-              )
-            ],
-          ),
+              ]),
+            )
+          ],
         ));
   }
 

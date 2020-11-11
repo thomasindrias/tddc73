@@ -41,7 +41,7 @@ class _CreditCardState extends State<CreditCard> {
       crossFadeState: widget.isCardFlipped
           ? CrossFadeState.showFirst
           : CrossFadeState.showSecond,
-      duration: Duration(milliseconds: 1000),
+      duration: Duration(milliseconds: 500),
     );
   }
 
@@ -57,7 +57,6 @@ class _CreditCardState extends State<CreditCard> {
               colorFilter: ColorFilter.mode(
                   Colors.black.withOpacity(0.4), BlendMode.srcOver))),
       width: width,
-      height: height / 3,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
@@ -91,7 +90,7 @@ class _CreditCardState extends State<CreditCard> {
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.sourceSansPro(
                     color: Colors.white,
-                    fontSize: 24,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                     wordSpacing: 20,
                     letterSpacing: 3,
