@@ -16,13 +16,14 @@ class RepoDetail extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(repo.title)),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: ListView(
-          children: [
-            Container(
-              height: height * 0.3,
-              child: Center(
+      body: ListView(
+        padding: EdgeInsets.all(10.0),
+        children: [
+          Container(
+            height: height * 0.3,
+            child: Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
                 child: CachedNetworkImage(
                   fit: BoxFit.contain,
                   imageUrl: repo.img,
@@ -31,101 +32,102 @@ class RepoDetail extends StatelessWidget {
                 ),
               ),
             ),
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: Icon(
-                                  FontAwesomeIcons.star,
-                                  size: 24,
-                                  color: Colors.orange,
-                                ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Icon(
+                                FontAwesomeIcons.star,
+                                size: 24,
+                                color: Colors.orange,
                               ),
-                              Container(
-                                child: Text(repo.stargazers.toString(),
-                                    style: TextStyle(color: Colors.black)),
-                              )
-                            ],
-                          ),
+                            ),
+                            Container(
+                              child: Text(repo.stargazers.toString(),
+                                  style: TextStyle(color: Colors.black)),
+                            )
+                          ],
                         ),
-                        Container(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: Icon(
-                                  FontAwesomeIcons.codeBranch,
-                                  size: 24,
-                                ),
+                      ),
+                      Container(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Icon(
+                                FontAwesomeIcons.codeBranch,
+                                size: 24,
                               ),
-                              Container(
-                                child: Text(repo.forks.toString(),
-                                    style: TextStyle(color: Colors.black)),
-                              )
-                            ],
-                          ),
+                            ),
+                            Container(
+                              child: Text(repo.forks.toString(),
+                                  style: TextStyle(color: Colors.black)),
+                            )
+                          ],
                         ),
-                        Container(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: Icon(
-                                  FontAwesomeIcons.eye,
-                                  size: 24,
-                                ),
+                      ),
+                      Container(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Icon(
+                                FontAwesomeIcons.eye,
+                                size: 24,
                               ),
-                              Container(
-                                child: Text(repo.watchers.toString(),
-                                    style: TextStyle(color: Colors.black)),
-                              )
-                            ],
-                          ),
+                            ),
+                            Container(
+                              child: Text(repo.watchers.toString(),
+                                  style: TextStyle(color: Colors.black)),
+                            )
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    height: 20,
-                    child: Container(),
+                ),
+                SizedBox(
+                  height: 20,
+                  child: Container(),
+                ),
+                Text(repo.title ?? 'No title',
+                    style: GoogleFonts.sourceSansPro(
+                        fontSize: 26, fontWeight: FontWeight.bold)),
+                Text(repo.owner ?? 'No name',
+                    style: GoogleFonts.sourceSansPro(fontSize: 24)),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Container(
+                    child: Text(repo.description ?? 'No description',
+                        style: GoogleFonts.sourceSansPro(fontSize: 18)),
                   ),
-                  Text(repo.title ?? 'No title',
-                      style: GoogleFonts.sourceSansPro(
-                          fontSize: 26, fontWeight: FontWeight.bold)),
-                  Text(repo.owner ?? 'No name',
-                      style: GoogleFonts.sourceSansPro(fontSize: 24)),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: Container(
-                      child: Text(repo.description ?? 'No description',
-                          style: GoogleFonts.sourceSansPro(fontSize: 18)),
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
