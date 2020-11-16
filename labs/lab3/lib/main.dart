@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:lab3/Repo.dart';
+import 'package:lab3/RepoDetail.dart';
 
 import 'api.dart';
 
@@ -44,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
-        title: new Text(widget.title),
+        title: new Text("Trending Repos: $languageQuery"),
         actions: [searchBar.getSearchAction(context)]);
   }
 
@@ -58,6 +60,19 @@ class _MyHomePageState extends State<MyHomePage> {
           });
         },
         buildDefaultAppBar: buildAppBar);
+  }
+
+  Repo generateRepoObj(objectItem) {
+    String title = objectItem["name"];
+    String owner = objectItem["owner"]["login"];
+    String img = objectItem["owner"]["avatarUrl"];
+    String description = objectItem["description"];
+    int forks = objectItem["forks"]["totalCount"];
+    int stargazers = objectItem["stargazers"]["totalCount"];
+    int watchers = objectItem["watchers"]["totalCount"];
+
+    return new Repo(
+        title, owner, img, description, forks, stargazers, watchers);
   }
 
   String languageQuery = "Dart";
@@ -120,14 +135,16 @@ class _MyHomePageState extends State<MyHomePage> {
           });
 
           //print(result.data);
-          List repositories = result.data['search']['nodes'];
+          List<Repo> repositories = new List();
+          for (var repository in result.data['search']['nodes']) {
+            repositories.add(generateRepoObj(repository));
+          }
 
           return Column(
             children: [
               Expanded(
                 child: ListView.builder(
                     physics: const AlwaysScrollableScrollPhysics(),
-                    controller: _scrollController,
                     shrinkWrap: true,
                     itemCount: repositories.length + 1,
                     itemBuilder: (context, index) {
@@ -135,7 +152,17 @@ class _MyHomePageState extends State<MyHomePage> {
                         return Center(
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text("LOAD MORE"),
+                            child: RaisedButton(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text("Load More"),
+                                ],
+                              ),
+                              onPressed: () {
+                                fetchMore(opts);
+                              },
+                            ),
                           ),
                         );
 
@@ -143,11 +170,17 @@ class _MyHomePageState extends State<MyHomePage> {
                       return Card(
                         margin: EdgeInsets.all(10.0),
                         child: InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                new MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        RepoDetail(repository)));
+                          },
                           child: ListTile(
-                              title: Text(repository['name']),
+                              title: Text(repository.title),
                               subtitle: Text(
-                                repository['description'],
+                                repository.description,
                                 softWrap: false,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -164,8 +197,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     ),
                                     Flexible(
                                       child: Text(
-                                          repository['stargazers']['totalCount']
-                                              .toString(),
+                                          repository.stargazers.toString(),
                                           style:
                                               TextStyle(color: Colors.black)),
                                     )
@@ -175,7 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               leading: Tab(
                                 icon: CachedNetworkImage(
                                   fit: BoxFit.contain,
-                                  imageUrl: repository['owner']['avatarUrl'],
+                                  imageUrl: repository.img,
                                   placeholder: (context, url) =>
                                       CircularProgressIndicator(),
                                   errorWidget: (context, url, error) =>

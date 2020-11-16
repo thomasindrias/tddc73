@@ -27,6 +27,7 @@ query trendingRepos(\$queryString: String!, \$cursor: String) {
         owner {
           avatarUrl
           url
+          login
         }
         stargazers {
           totalCount
@@ -34,7 +35,36 @@ query trendingRepos(\$queryString: String!, \$cursor: String) {
         forks {
           totalCount
         }
+        watchers {
+          totalCount
+        }
         description
+      }
+    }
+  }
+}
+""";
+
+final String getDetailsQuery = """
+query getDetails(\$login: String!, \$name: String) {
+  repositoryOwner(login: \$login) {
+    repositories {
+      totalCount
+    }
+    repository(name: \$name) {
+      name
+      owner {
+        avatarUrl
+      }
+      description
+      forks {
+        totalCount
+      }
+      stargazers {
+        totalCount
+      }
+      watchers {
+        totalCount
       }
     }
   }
