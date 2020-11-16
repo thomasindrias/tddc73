@@ -44,29 +44,3 @@ query trendingRepos(\$queryString: String!, \$cursor: String) {
   }
 }
 """;
-
-final String getDetailsQuery = """
-query getDetails(\$login: String!, \$name: String) {
-  repositoryOwner(login: \$login) {
-    repositories {
-      totalCount
-    }
-    repository(name: \$name) {
-      name
-      owner {
-        avatarUrl
-      }
-      description
-      forks {
-        totalCount
-      }
-      stargazers {
-        totalCount
-      }
-      watchers {
-        totalCount
-      }
-    }
-  }
-}
-""";
