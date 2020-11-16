@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: MyHomePage(title: 'Flutter Demo Home Page'),
+        home: MyHomePage(title: 'Trending Repos'),
       ),
     );
   }
@@ -51,12 +52,16 @@ class _MyHomePageState extends State<MyHomePage> {
     searchBar = new SearchBar(
         inBar: false,
         setState: setState,
-        onSubmitted: print,
+        onSubmitted: (String value) {
+          setState(() {
+            languageQuery = value;
+          });
+        },
         buildDefaultAppBar: buildAppBar);
   }
 
-  final String languageQuery = "Flutter";
-
+  String languageQuery = "Dart";
+  ScrollController _scrollController = new ScrollController();
   //final languageController = TextEditingController();
 
   @override
@@ -69,30 +74,122 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: searchBar.build(context),
-        body: Query(
-          options: QueryOptions(
-            documentNode: gql(getTasksQuery),
-            variables: {'queryString': 'language:$languageQuery stars:>1000'},
-          ),
-          builder: (QueryResult result,
-              {VoidCallback refetch, FetchMore fetchMore}) {
-            if (result.hasException) return Text(result.exception.toString());
+      appBar: searchBar.build(context),
+      body: Query(
+        options: QueryOptions(
+          documentNode: gql(getTasksQuery),
+          variables: {'queryString': 'language:$languageQuery stars:>1000'},
+        ),
+        builder: (QueryResult result,
+            {VoidCallback refetch, FetchMore fetchMore}) {
+          if (result.hasException) return Text(result.exception.toString());
 
-            if (result.loading) return Text('Loading');
+          if (result.loading)
+            return Center(
+                child: Container(
+              child: CircularProgressIndicator(),
+            ));
 
-            //print(result.data);
-            List repositories = result.data['search']['edges']['node'];
+          final Map pageInfo = result.data['search']['pageInfo'];
+          final String fetchMoreCursor = pageInfo['endCursor'];
 
-            return ListView.builder(
-                itemCount: repositories.length,
-                itemBuilder: (context, index) {
-                  final repository = repositories[index];
+          FetchMoreOptions opts = FetchMoreOptions(
+            variables: {'cursor': fetchMoreCursor},
+            updateQuery: (previousResultData, fetchMoreResultData) {
+              // this function will be called so as to combine both the original and fetchMore results
+              // it allows you to combine them as you would like
+              final List<dynamic> repos = [
+                ...previousResultData['search']['nodes'] as List<dynamic>,
+                ...fetchMoreResultData['search']['nodes'] as List<dynamic>
+              ];
 
-                  return Text(repository['name']);
-                });
-          },
-        ) // This trailing comma makes auto-formatting nicer for build methods.
-        );
+              // to avoid a lot of work, lets just update the list of repos in returned
+              // data with new data, this also ensures we have the endCursor already set
+              // correctly
+              fetchMoreResultData['search']['nodes'] = repos;
+
+              return fetchMoreResultData;
+            },
+          );
+
+          _scrollController.addListener(() {
+            if (_scrollController.position.pixels ==
+                _scrollController.position.maxScrollExtent) {
+              fetchMore(opts);
+            }
+          });
+
+          //print(result.data);
+          List repositories = result.data['search']['nodes'];
+
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    controller: _scrollController,
+                    shrinkWrap: true,
+                    itemCount: repositories.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == repositories.length)
+                        return Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text("LOAD MORE"),
+                          ),
+                        );
+
+                      final repository = repositories[index];
+                      return Card(
+                        margin: EdgeInsets.all(10.0),
+                        child: InkWell(
+                          onTap: () {},
+                          child: ListTile(
+                              title: Text(repository['name']),
+                              subtitle: Text(
+                                repository['description'],
+                                softWrap: false,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              trailing: Container(
+                                width: 80,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Icon(
+                                      Icons.star_border,
+                                      size: 18,
+                                      color: Colors.orange,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                          repository['stargazers']['totalCount']
+                                              .toString(),
+                                          style:
+                                              TextStyle(color: Colors.black)),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              leading: Tab(
+                                icon: CachedNetworkImage(
+                                  fit: BoxFit.contain,
+                                  imageUrl: repository['owner']['avatarUrl'],
+                                  placeholder: (context, url) =>
+                                      CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
+                                ),
+                              )),
+                        ),
+                      );
+                    }),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 }
