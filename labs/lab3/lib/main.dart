@@ -44,6 +44,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   SearchBar searchBar;
+  String languageQuery = "Dart";
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
@@ -74,17 +75,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return new Repo(
         title, owner, img, description, forks, stargazers, watchers);
-  }
-
-  String languageQuery = "Dart";
-  ScrollController _scrollController = new ScrollController();
-  //final languageController = TextEditingController();
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    //languageController.dispose();
-    super.dispose();
   }
 
   @override
@@ -127,13 +117,6 @@ class _MyHomePageState extends State<MyHomePage> {
               return fetchMoreResultData;
             },
           );
-
-          _scrollController.addListener(() {
-            if (_scrollController.position.pixels ==
-                _scrollController.position.maxScrollExtent) {
-              fetchMore(opts);
-            }
-          });
 
           //print(result.data);
           List<Repo> repositories = new List();
