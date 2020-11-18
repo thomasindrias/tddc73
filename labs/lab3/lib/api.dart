@@ -5,8 +5,8 @@ ValueNotifier<GraphQLClient> client(String authkey) => ValueNotifier(
       GraphQLClient(
         cache:
             NormalizedInMemoryCache(dataIdFromObject: typenameDataIdFromObject),
-        link: HttpLink(
-            uri: 'https://api.github.com/graphql',
+        link: HttpLink(uri: 'https://api.github.com/graphql',
+            // You will need to insert your own auth key, since mine is hidden
             headers: {"authorization": "Bearer $authkey"}),
       ),
     );
