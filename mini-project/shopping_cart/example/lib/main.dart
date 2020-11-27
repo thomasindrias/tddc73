@@ -58,11 +58,20 @@ class _MyHomePageState extends State<MyHomePage> {
     return items;
   }
 
+  generateCost() {
+    List<ExtraCostModel> costs = new List<ExtraCostModel>();
+    costs.add(ExtraCostModel(40.0, "Tax"));
+    costs.add(ExtraCostModel(60.0, "Shipping"));
+    return costs;
+  }
+
   List<ShoppingModel> items;
+  List<ExtraCostModel> extraCost;
 
   @override
   void initState() {
     items = generateShoppingItems();
+    extraCost = generateCost();
 
     super.initState();
   }
@@ -78,8 +87,9 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Container(
             color: Colors.grey[200],
             child: ShoppingCartWidget(
-              shoppingItems: items,
-              locale: "sv_SE",
+              shoppingItems: items, // Send in your list of items
+              locale: "sv_SE", // Currency based on localization
+              extraCost: extraCost, //Send in custom total price calculator
             )));
   }
 }
