@@ -27,54 +27,79 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  MyHomePage({Key key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  var activeStep = 0;
+  List<StepsLeftItem> steps = [
+    StepsLeftItem(
+      label: "Order placed",
+    ),
+    StepsLeftItem(label: "Review"),
+    StepsLeftItem(label: "Order"),
+    StepsLeftItem(label: "Shipped"),
+    StepsLeftItem(label: "Delivered"),
+  ];
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
         appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title),
+          title: Text("Steps_left example"),
         ),
-        body: Container(
-            child: StepsLeftBar(
-          activeStep: 1,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            StepsLeftItem(
-              label: "Order placed",
-            ),
-            StepsLeftItem(label: "Review"),
-            StepsLeftItem(label: "Shipped"),
+            Container(
+                child: StepsLeftBar(
+              activeStep: activeStep,
+              children: steps,
+            )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FlatButton(
+                    color: Colors.blue,
+                    textColor: Colors.white,
+                    onPressed: (activeStep > 0)
+                        ? () {
+                            setState(() {
+                              activeStep--;
+                            });
+                          }
+                        : null,
+                    child: Text("PREVIOUS"),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FlatButton(
+                    color: Colors.blue,
+                    textColor: Colors.white,
+                    onPressed: (activeStep < steps.length)
+                        ? () {
+                            setState(() {
+                              activeStep++;
+                            });
+                          }
+                        : null,
+                    child: Text("NEXT"),
+                  ),
+                )
+              ],
+            )
           ],
-        )));
+        ));
   }
 }

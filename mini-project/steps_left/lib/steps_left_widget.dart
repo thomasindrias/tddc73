@@ -5,7 +5,6 @@ class StepsLeftBar extends StatefulWidget {
   StepsLeftBar({
     Key key,
     @required this.children,
-    this.onTap,
     this.orientation,
     this.activeStep,
     this.labelColor = const Color(0xff1B2334),
@@ -20,7 +19,6 @@ class StepsLeftBar extends StatefulWidget {
         super(key: key);
 
   final List<StepsLeftItem> children;
-  final VoidCallback onTap;
   final String orientation;
   final int activeStep;
   final Color labelColor;
@@ -34,15 +32,6 @@ class StepsLeftBar extends StatefulWidget {
 }
 
 class _StepsLeftBarState extends State<StepsLeftBar> {
-  int activeStep;
-
-  @override
-  void initState() {
-    super.initState();
-
-    activeStep = widget.activeStep;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(children: [
@@ -51,8 +40,8 @@ class _StepsLeftBarState extends State<StepsLeftBar> {
         child: Row(
             children: List.generate(widget.children.length * 2 - 1, (index) {
           int itemIndex = index ~/ 2; //Indices only for items
-          bool isActive = activeStep == itemIndex;
-          bool isDone = activeStep > itemIndex;
+          bool isActive = widget.activeStep == itemIndex;
+          bool isDone = widget.activeStep > itemIndex;
           // Workaround: Create a new copy with the index numbers. Maybe not so efficient..
           StepsLeftItem item = StepsLeftItem(
             stepNr: itemIndex,
