@@ -34,40 +34,44 @@ class StepsLeftBar extends StatefulWidget {
 class _StepsLeftBarState extends State<StepsLeftBar> {
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
+    return Column(mainAxisSize: MainAxisSize.min, children: [
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Row(
+            mainAxisSize: MainAxisSize.max,
             children: List.generate(widget.children.length * 2 - 1, (index) {
-          int itemIndex = index ~/ 2; //Indices only for items
-          bool isActive = widget.activeStep == itemIndex;
-          bool isDone = widget.activeStep > itemIndex;
-          // Workaround: Create a new copy with the index numbers. Maybe not so efficient..
-          StepsLeftItem item = StepsLeftItem(
-            stepNr: itemIndex,
-            isActive: isActive,
-            isDone: isDone,
-            labelColor: widget.labelColor,
-            icon: widget.children[itemIndex].icon,
-            label: widget.children[itemIndex].label,
-            activeColor: widget.activeCircleColor,
-            inactiveColor: widget.inactiveCircleColor,
-            activeBorderColor: widget.activeCircleColor,
-            inactiveBorderColor: widget.inactiveLineColor,
-          );
+              int itemIndex = index ~/ 2; //Indices only for items
+              bool isActive = widget.activeStep == itemIndex;
+              bool isDone = widget.activeStep > itemIndex;
+              // Workaround: Create a new copy with the index numbers. Maybe not so efficient..
+              StepsLeftItem item = StepsLeftItem(
+                key: Key(widget.children[itemIndex].label),
+                stepNr: itemIndex,
+                isActive: isActive,
+                isDone: isDone,
+                labelColor: widget.labelColor,
+                icon: widget.children[itemIndex].icon,
+                label: widget.children[itemIndex].label,
+                activeColor: widget.activeCircleColor,
+                inactiveColor: widget.inactiveCircleColor,
+                activeBorderColor: widget.activeCircleColor,
+                inactiveBorderColor: widget.inactiveLineColor,
+              );
 
-          if (index % 2 == 1)
-            return Flexible(
-              child: Container(
-                color:
-                    isDone ? widget.activeLineColor : widget.inactiveLineColor,
-                height: 4.0,
-              ),
-            );
-          return item;
-        })),
+              if (index % 2 == 1)
+                return Flexible(
+                  child: Container(
+                    color: isDone
+                        ? widget.activeLineColor
+                        : widget.inactiveLineColor,
+                    height: 4.0,
+                  ),
+                );
+              return item;
+            })),
       ),
       Row(
+        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: List.generate(
             widget.children.length,
@@ -75,6 +79,7 @@ class _StepsLeftBarState extends State<StepsLeftBar> {
                   width: 80,
                   child: Text(
                     widget.children[index].label ?? '',
+                    textDirection: TextDirection.ltr,
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     style: TextStyle(
