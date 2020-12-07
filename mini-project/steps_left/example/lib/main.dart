@@ -64,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
               activeStep: activeStep,
               children: steps,
             )),
+            Container(child: Text(activeStep.toString())),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
