@@ -102,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 ```
-This is a template that is provided by flutter at creation of the app. However, we will remove the `floationActionButton` to create our own buttons.
+This is a template code that is provided by flutter at creation of the app. However, we will remove the `floationActionButton` to create our own buttons and layouts.
 
 ## Page View
 Let's begin by creating a page view. A page view widget allows for multiple pages to be used in an app. What's handy with the Page View in flutter is that it has many customizable option such as custom transitions at page change, however that is out of scope of this tutorial.
