@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class StepsLeftItem extends StatefulWidget {
   StepsLeftItem({
     Key key,
+    @required this.label,
     this.icon,
-    this.label,
     this.stepNr,
     this.isDone = false,
     this.isActive = false,
@@ -41,6 +41,7 @@ class _StepsLeftItemState extends State<StepsLeftItem> {
             child: widget.icon ??
                 Text(
                   widget.stepNr.toString(),
+                  textDirection: TextDirection.ltr,
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
